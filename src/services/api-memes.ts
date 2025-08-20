@@ -1,7 +1,17 @@
 import { Client } from "@gradio/client";
 import translate from "translate";
 
-const client = await Client.connect("fancyfeast/joy-caption-alpha-two");
+// Hugging Face token from env (must start with 'hf_')
+type HfToken = `hf_${string}`;
+const rawToken = import.meta.env.VITE_HF_TOKEN as string | undefined;
+const HF_TOKEN: HfToken | undefined =
+  typeof rawToken === "string" && rawToken.startsWith("hf_")
+    ? (rawToken as HfToken)
+    : undefined;
+
+const client = await Client.connect("fancyfeast/joy-caption-alpha-two", {
+  hf_token: HF_TOKEN,
+});
 const captions = `
 Just here for the LOLs
 Cant even with todays adulting
