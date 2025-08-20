@@ -6,7 +6,7 @@ export function Projects() {
     <>
       <div className="projects">
         <div className="projects__grid">
-          {currProjectsInfo.projects.map((v, i) => (
+          {currProjectsInfo.projects.map((v) => (
             <ProjectCard
               name={v.name}
               description={v.description}
