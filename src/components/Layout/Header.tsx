@@ -2,7 +2,7 @@ import { FolderOpen, Home } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.scss";
-
+import logo from "./../../assets/logo.png";
 const Header: React.FC = () => {
   const location = useLocation();
 
@@ -16,7 +16,7 @@ const Header: React.FC = () => {
       <div className="container">
         <div className="header__content">
           <Link to="/" className="header__logo">
-            <img src="public\favicons\android-chrome-192x192.png"></img>
+            <img src={logo}></img>
           </Link>
 
           <nav className="header__nav">
