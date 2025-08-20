@@ -13,6 +13,7 @@ export function MemeGenerator() {
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultFile, setResultFile] = useState<File | null>(null);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -37,8 +38,10 @@ export function MemeGenerator() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("pepe");
     if (!file) return;
     setIsGenerating(true);
+    setErrorMessage(null);
     try {
       const caption = await createCaption(file);
       const output = await renderMemeWithTopCaption(file, caption);
@@ -54,8 +57,25 @@ export function MemeGenerator() {
           block: "start",
         });
       }, 0);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error generando meme:", err);
+      const raw = (err?.message || String(err || "")).toLowerCase();
+      let friendly = "Ocurrió un error generando el meme. Intenta de nuevo.";
+      if (
+        raw.includes("quota") ||
+        raw.includes("exceeded") ||
+        raw.includes("usage")
+      ) {
+        friendly =
+          "Se agotó la cuota del servicio temporalmente. Intenta nuevamente en unos minutos.";
+      } else if (
+        raw.includes("unauthorized") ||
+        raw.includes("forbidden") ||
+        raw.includes("token")
+      ) {
+        friendly = "No se pudo autenticar con el servicio. Intenta más tarde.";
+      }
+      setErrorMessage(friendly);
     } finally {
       setIsGenerating(false);
     }
@@ -157,6 +177,12 @@ export function MemeGenerator() {
             <span className="meme-loading__text">Generando meme...</span>
           </div>
         )}
+
+        {errorMessage && (
+          <div className="meme-error" role="alert">
+            {errorMessage}
+          </div>
+        )}
       </form>
 
       {resultUrl && (
@@ -177,7 +203,6 @@ export function MemeGenerator() {
             </button>
             <button
               type="button"
-              style={{ display: "none" }}
               className="btn btn--secondary"
               onClick={handleShare}
             >
