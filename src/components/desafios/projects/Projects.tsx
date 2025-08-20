@@ -8,6 +8,7 @@ export function Projects() {
         <div className="projects__grid">
           {currProjectsInfo.projects.map((v) => (
             <ProjectCard
+              key={v.path}
               name={v.name}
               description={v.description}
               duration={v.duration}
