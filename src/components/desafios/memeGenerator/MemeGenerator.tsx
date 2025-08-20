@@ -37,7 +37,6 @@ export function MemeGenerator() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("pepe");
     if (!file) return;
     setIsGenerating(true);
     try {
