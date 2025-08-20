@@ -1,17 +1,8 @@
 import { Client } from "@gradio/client";
 import translate from "translate";
 
-// Hugging Face token from env (must start with 'hf_')
-type HfToken = `hf_${string}`;
-const rawToken = import.meta.env.VITE_HF_TOKEN as string | undefined;
-const HF_TOKEN: HfToken | undefined =
-  typeof rawToken === "string" && rawToken.startsWith("hf_")
-    ? (rawToken as HfToken)
-    : undefined;
+// Production-safe: no token usage included in the bundle
 
-const client = await Client.connect("fancyfeast/joy-caption-alpha-two", {
-  hf_token: HF_TOKEN,
-});
 const captions = `
 Just here for the LOLs
 Cant even with todays adulting
@@ -80,6 +71,7 @@ When life shuts a door open it again Its a door Thats how they work
 translate.engine = "google";
 
 export async function createCaption(image: File) {
+  const client = await Client.connect("fancyfeast/joy-caption-alpha-two");
   const result = await client.predict("/stream_chat", {
     input_image: image,
     caption_type: "Descriptive (Informal)",
@@ -97,6 +89,6 @@ export async function createCaption(image: File) {
     from: "en",
     to: "es",
   });
-
+  client.close();
   return text;
 }
